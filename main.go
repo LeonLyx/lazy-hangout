@@ -13,10 +13,10 @@ import (
 )
 
 const (
-	serviceAccountCredentials = "credentials.json"
-	dateLayout                = "2006-01-02"
-	conferenceSolution        = "eventHangout"
-	calendarID                = "primary"
+	envServiceAccount  = "HANGOUT_CREDENTIALS_PATH"
+	dateLayout         = "2006-01-02"
+	conferenceSolution = "eventHangout"
+	calendarID         = "primary"
 )
 
 func newEvent() (*calendar.Event, error) {
@@ -44,6 +44,12 @@ func newEvent() (*calendar.Event, error) {
 }
 
 func main() {
+	serviceAccountCredentials, isExists := os.LookupEnv(envServiceAccount)
+	if isExists == false {
+		fmt.Printf("please set the absolute file path to your service account's credentials as an environment variable, %s", envServiceAccount)
+		os.Exit(1)
+	}
+
 	ctx := context.Background()
 	srv, err := calendar.NewService(ctx, option.WithCredentialsFile(serviceAccountCredentials))
 	if err != nil {
